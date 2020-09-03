@@ -1,9 +1,14 @@
 import { CreateUserRequestDTO, CreateUserResponseDTO } from './users.dto';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { User } from './user.entity';
 import { genSalt, hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import { compare } from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -22,5 +27,19 @@ export class UsersService {
     const token = await sign({ id, name, email }, process.env.APP_SECRET);
     const createUserResponseDTO: CreateUserResponseDTO = { accessToken: token };
     return createUserResponseDTO;
+  }
+
+  async validateUserByEmailAndPassword(
+    email: string,
+    password: string,
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({ email });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (!(await compare(password, user.password))) {
+      throw new UnauthorizedException('Use and password not match');
+    }
+    return user;
   }
 }
