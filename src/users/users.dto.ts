@@ -3,3 +3,9 @@ export interface CreateUserRequestDTO {
   email: string;
   password: string;
 }
+
+export interface CreateUserResponseDTO {
+  id: number;
+  name: string;
+  email: string;
+}
