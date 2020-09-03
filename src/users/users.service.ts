@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { User } from './user.entity';
 import { genSalt, hash } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
 
 @Injectable()
 export class UsersService {
@@ -18,7 +19,8 @@ export class UsersService {
     user.password = await hash(password, salt);
     const response = await user.save();
     const { id } = response;
-    const createUserResponseDTO: CreateUserResponseDTO = { id, name, email };
+    const token = await sign({ id, name, email }, process.env.APP_SECRET);
+    const createUserResponseDTO: CreateUserResponseDTO = { accessToken: token };
     return createUserResponseDTO;
   }
 }
