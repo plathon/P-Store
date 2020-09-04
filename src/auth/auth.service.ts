@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { AuthUserLocalRequestDTO, AuthUserLocalResponseDTO } from './auth.dto';
-import { User } from 'src/users/user.entity';
+import { User } from '../users/user.entity';
 import { JwtPayload } from './jwt-payload';
 import { JwtService } from '@nestjs/jwt';
 
